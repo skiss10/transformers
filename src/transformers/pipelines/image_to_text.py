@@ -50,11 +50,15 @@ class ImageToTextPipeline(Pipeline):
     """
 
     def __init__(self, *args, **kwargs):
+        print("Started ImageToTextPipeline")
         super().__init__(*args, **kwargs)
         requires_backends(self, "vision")
         self.check_model_type(
             TF_MODEL_FOR_VISION_2_SEQ_MAPPING if self.framework == "tf" else MODEL_FOR_VISION_2_SEQ_MAPPING
         )
+        print("ImageToTextPipeline - self: " + str(self))
+        print("ImageToTextPipeline - self.model: " + str(self.model))
+        print("ImageToTextPipeline - self.model.generate: " + str(self.model.generate))
 
     def _sanitize_parameters(self, max_new_tokens=None, generate_kwargs=None):
         forward_kwargs = {}
@@ -101,15 +105,19 @@ class ImageToTextPipeline(Pipeline):
     def preprocess(self, image):
         image = load_image(image)
         model_inputs = self.image_processor(images=image, return_tensors=self.framework)
+        print("ImageToTextPipeline self.image_processor from preprocess method:" + str(self.image_processor))
         return model_inputs
 
     def _forward(self, model_inputs, generate_kwargs=None):
+        print("ImageToTextPipeline model_inputs from _forward method:" + str(model_inputs))
+        # print(model_inputs) # the issue is that model inputs dictionary doesn't have the key "input_ids"
         if generate_kwargs is None:
             generate_kwargs = {}
         # FIXME: We need to pop here due to a difference in how `generation.py` and `generation.tf_utils.py`
         #  parse inputs. In the Tensorflow version, `generate` raises an error if we don't use `input_ids` whereas
         #  the PyTorch version matches it with `self.model.main_input_name` or `self.model.encoder.main_input_name`
         #  in the `_prepare_model_inputs` method.
+        # model_inputs['input_ids'] = None # This Works!
         inputs = model_inputs.pop(self.model.main_input_name)
         model_outputs = self.model.generate(inputs, **model_inputs, **generate_kwargs)
         return model_outputs

@@ -16,7 +16,6 @@ from typing import TYPE_CHECKING
 
 from ...utils import OptionalDependencyNotAvailable, _LazyModule, is_torch_available
 
-
 _import_structure = {
     "configuration_git": ["GIT_PRETRAINED_CONFIG_ARCHIVE_MAP", "GitConfig", "GitVisionConfig"],
     "processing_git": ["GitProcessor"],
@@ -34,6 +33,7 @@ else:
         "GitModel",
         "GitPreTrainedModel",
         "GitVisionModel",
+        "GitForVision2Seq",
     ]
 
 if TYPE_CHECKING:
@@ -52,6 +52,7 @@ if TYPE_CHECKING:
             GitModel,
             GitPreTrainedModel,
             GitVisionModel,
+            GitForVision2Seq,
         )
 
 else:
