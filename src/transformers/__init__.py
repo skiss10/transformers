@@ -1653,6 +1653,7 @@ else:
             "GitModel",
             "GitPreTrainedModel",
             "GitVisionModel",
+            "GitForVision2Seq",
         ]
     )
     _import_structure["models.glpn"].extend(
@@ -5207,6 +5208,7 @@ if TYPE_CHECKING:
             GitModel,
             GitPreTrainedModel,
             GitVisionModel,
+            GitForVision2Seq,
         )
         from .models.glpn import (
             GLPN_PRETRAINED_MODEL_ARCHIVE_LIST,
